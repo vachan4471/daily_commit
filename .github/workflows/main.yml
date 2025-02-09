@@ -1,44 +1,25 @@
-name: Daily Automated Commit
+name: Daily Commit
 
 on:
   schedule:
-    - cron: '0 1 * * *'  # Runs at 01:00 UTC daily
-  workflow_dispatch:  # Allows manual triggering
+    - cron: '11 19 * * *' # Runs daily at 11:19 PM UTC
+  workflow_dispatch: # Allows manual trigger
 
 jobs:
-  daily-commit:
+  daily_commit:
     runs-on: ubuntu-latest
-    name: Daily Update by 21f3001091@ds.study.iitm.ac.in
-
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.PAT_TOKEN }}  # Uses Personal Access Token
-          fetch-depth: 0  # Ensures full history is fetched
+        uses: actions/checkout@v3
 
-      - name: Configure Git
+      - name: Make a change
         run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "21f3001091@ds.study.iitm.ac.in"
+          echo "$(date)" >> daily_log.txt
 
-      - name: Create or update daily log
+      - name: Commit changes
         run: |
-          mkdir -p logs
-          echo "Daily update: $(date '+%Y-%m-%d %H:%M:%S UTC')" >> logs/daily-updates.log
-
-      - name: Stash unstaged changes
-        run: git stash --include-untracked || true
-
-      - name: Pull latest changes
-        run: git pull --rebase origin main
-
-      - name: Apply stashed changes (if any)
-        run: git stash pop || true
-
-      - name: Commit and push changes
-        run: |
-          git add logs/daily-updates.log
-          git commit -m "Daily automated update $(date '+%Y-%m-%d')" || exit 0
-          remote_repo="https://${{ secrets.PAT_TOKEN }}@github.com/${{ github.repository }}.git"
-          git push "${remote_repo}" HEAD:main
+          git config user.name "Your Name"
+          git config user.email "21f3001019@tds.study.iitm.ac.in"
+          git add daily_log.txt
+          git commit -m "Daily update by 21f3001019@tds.study.iitm.ac.in"
+          git push
